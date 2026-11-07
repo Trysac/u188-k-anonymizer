@@ -9,4 +9,5 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Add k-anonymity checker, numeric range and prefix mask hierarchies, full-domain generalisation with bounded suppression, and CLI.
 - Initial project structure from the factory utility template.
