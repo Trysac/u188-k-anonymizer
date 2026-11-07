@@ -1,20 +1,10 @@
 # Testing
 
-## Running
-
-```sh
-uv run pytest --cov=k_anonymizer   # tests with coverage report
-uv run python scripts/check.py      # every gate, as CI and the factory run it
-```
-
 ## Policy
+- The package maintains high test coverage. The CI gate fails if branch coverage of `src/k_anonymizer` falls below 80%.
+- Tests are deterministic, relying on no network, no external clock, and independent test ordering.
+- Every bug report must be accompanied by a failing test that reproduces the error.
 
-- Branch coverage of `src/k_anonymizer` must stay at or above 80 %; the gate fails below it.
-- Tests exercise the public API (`import k_anonymizer`) and assert every observable effect:
-  return values, raised exceptions and their messages.
-- Each bug fix starts with a failing test that reproduces it.
-- Tests are deterministic: no network, no wall clock, no dependence on test order.
-
-## Layout
-
-`tests/test_<module>.py` mirrors each public module. Shared fixtures go in `tests/conftest.py`.
+## Test Coverage
+- `tests/test_k_anonymizer.py`: Exercises the public API including all successful flows, validation errors (missing columns, invalid options, etc.), and lattice traversal logic.
+- The test suite directly verifies the requirements listed in the specification, such as k-anonymity calculations on small sample sets and the mapping behavior of hierarchies (numeric_range and prefix_mask).

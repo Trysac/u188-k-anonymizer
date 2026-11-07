@@ -1,29 +1,22 @@
 # Architecture
 
-## Purpose
+`trysac-k-anonymizer` provides full-domain generalisation (Samarati-style) and k-anonymity verification over tabular datasets represented as sequence of dictionary rows (`list[dict[str, str]]`).
 
-`trysac-k-anonymizer` is a small, dependency-free Python library: Check k-anonymity of tabular data over quasi-identifiers and find minimal full-domain generalisation levels with bounded suppression
+## Core Concepts
 
-## Shape
+1. **Quasi-Identifiers (QIs)**: Attributes (e.g., age, postal code, gender) that, in combination, may re-identify individuals.
+2. **Equivalence Classes**: Subsets of rows that share identical quasi-identifier values.
+3. **Hierarchy**: Monotonically increasing generalisation steps from level 0 (identity) to `max_level` (fully masked `*`).
+   - `numeric_range(widths)`: Partitions integers into intervals of width $w$, e.g. `[lo, lo + w - 1]`.
+   - `prefix_mask(length)`: Masks the trailing $i$ characters with `*`.
+4. **Lattice Search**: Generates level vectors ordered by total sum (minimal information loss) and broken lexicographically by quasi-identifier order.
+5. **Bounded Suppression**: Discards at most $\lfloor \text{max\_suppression} \times N \rfloor$ rows belonging to equivalence classes smaller than $k$.
 
-```text
-caller code --> k_anonymizer (public API in __init__.py)
-                    |
-                    +-- pure functions, no I/O, no global state
-```
+## Error Handling
 
-- **Public API**: the names listed in `__all__` of `src/k_anonymizer/__init__.py`. Anything else is
-  internal and may change without a major version.
-- **Errors**: invalid input raises built-in exceptions (`ValueError`, `TypeError`) with a clear
-  message; the library never prints or exits.
-- **Side effects**: none. If a feature needs I/O, isolate it in its own module behind a small
-  interface and record the choice in an ADR.
-
-## Quality contract
-
-`scripts/check.py` is the single definition of the gates; `fabrica.json` tells the factory and CI
-how to run it. See [TESTING.md](TESTING.md).
-
-## Decisions
-
-Architecture decisions are recorded in [decisions/](decisions/) as numbered ADRs.
+All errors inherit from `KAnonError` and expose a typed `code` property:
+- `invalid_value`: Cell value cannot be transformed (e.g., non-integer in numeric range).
+- `invalid_column`: A specified QI column is missing from rows.
+- `invalid_option`: Invalid arguments (e.g., $k < 2$, negative widths, unsorted widths).
+- `search_too_large`: The generalisation lattice exceeds `max_nodes` (default 10,000).
+- `input_too_large`: Input file exceeds the 50MB limit in CLI.

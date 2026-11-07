@@ -19,6 +19,9 @@ classifiers = [
 ]
 dependencies = []
 
+[project.scripts]
+k-anonymizer = "k_anonymizer.__main__:main"
+
 [project.urls]
 Homepage = "https://github.com/Trysac/u188-k-anonymizer"
 Source = "https://github.com/Trysac/u188-k-anonymizer"
