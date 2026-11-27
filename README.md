@@ -11,8 +11,10 @@ Teams sharing extracts for analytics or research often remove explicit identifie
 Existing anonymisation tools like ARX are desktop research suites that introduce heavy JVM dependencies and complex GUIs. `k-anonymizer` is a lightweight, dependency-free library for Python that integrates directly into your data processing scripts and testing suites.
 
 ## Installation
+
+Not published to PyPI yet. Install it from GitHub:
 ```bash
-pip install k-anonymizer
+pip install "git+https://github.com/Trysac/u188-k-anonymizer"
 ```
 
 ## Usage Example
